@@ -9,20 +9,30 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace InetMarket.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
-        [Authorize]
+        [AllowAnonymous]
         public IActionResult Index()
         {
-            return View();
+            if (User.Identity.IsAuthenticated)
+            {
+                //return Content(User.Identity.Name);
+                return View();
+            }
+            return Content("не аутентифицирован");
+        }
+        public IActionResult About()
+        {
+            return Content("Authorized");
         }
 
-        public IActionResult About()
+        /*public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
 
             return View();
-        }
+        }*/
 
         public IActionResult Contact()
         {
