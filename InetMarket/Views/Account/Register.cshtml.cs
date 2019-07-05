@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace InetMarket.Views.Home
+namespace InetMarket.Views.Account
 {
-    public class LoginModel : PageModel
+    public class RegisterModel : PageModel
     {
         public void OnGet()
         {
