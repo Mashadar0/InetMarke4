@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using InetMarket.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InetMarket.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class FiltersController : Controller
     {
         private readonly MarketContext _context;
@@ -18,39 +20,72 @@ namespace InetMarket.Controllers
             _context = context;
         }
 
-        // GET: Filters
-        public async Task<IActionResult> Index()
+        // список фильтров с сортировкой по категориям
+        public IActionResult Index(int? categoryId)
         {
-            var filterCateg = _context.Filters.Include(p => p.Category);
+            IQueryable<Filter> filtersCateg = _context.Filters.Include(p => p.Category);
+            if (categoryId != null && categoryId != 0)
+            {
+                filtersCateg = filtersCateg.Where(p => p.CategoryId == categoryId);
+            }
             List<Category> categories = _context.Categories.ToList();
-            return View(await _context.Filters.ToListAsync());
+            // устанавливаем начальный элемент, который позволит выбрать всех
+            categories.Insert(0, new Category { Title = "All", Id = 0 });
+            FilterListView flv = new FilterListView
+            {
+                Categories = new SelectList(categories, "Id", "Title"),
+                Filters = filtersCateg.ToList(),
+            };
+            return View(flv);
+        }
+
+        //отображение результатов сортировки по категориям
+        [HttpGet]
+        public PartialViewResult CategorySearch(int? categoryId)
+        {
+            IQueryable<Filter> filtersCateg = _context.Filters.Include(p => p.Category);
+            if (categoryId != null && categoryId != 0)
+            {
+                filtersCateg = filtersCateg.Where(p => p.CategoryId == categoryId);
+            }
+            FilterListView flv = new FilterListView
+            {
+                Filters = filtersCateg.ToList(),
+            };
+            return PartialView(flv);
+        }
+
+        //отображение доп фильтров привязанных к фильтру
+        [HttpGet]
+        public ViewResult FilterSearch(int? filterId)
+        {
+            IQueryable<FilterAddititon> filterAddititonsFilter = _context.FilterAddititons.Include(p => p.Filter);
+            if (filterId != null && filterId != 0)
+            {
+                filterAddititonsFilter = filterAddititonsFilter.Where(p => p.FilterId == filterId);
+            }
+            FilterAddititonListView falv = new FilterAddititonListView
+            {
+                FilterAddititons = filterAddititonsFilter.ToList(),
+            };
+            return View(falv);
         }
 
         // GET: Filters/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public PartialViewResult Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var filter = await _context.Filters
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (filter == null)
-            {
-                return NotFound();
-            }
-
-            return View(filter);
+            Filter filter = _context.Filters.Find(id);
+            return PartialView(filter);
         }
 
         // GET: Filters/Create
-        public IActionResult Create()
+        public PartialViewResult Create()
         {
+            //отображение выпадающего списка категорий при добавлении фильтра
             SelectList categories = new SelectList(_context.Categories, "Id", "Title");
             ViewBag.Categories = categories;
 
-            return View();
+            return PartialView();
         }
 
         // POST: Filters/Create
@@ -70,22 +105,14 @@ namespace InetMarket.Controllers
         }
 
         // GET: Filters/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public PartialViewResult Edit(int? id)
         {
+            //отображение выпадающего списка категорий при изменении фильтра
             SelectList categories = new SelectList(_context.Categories, "Id", "Title");
             ViewBag.Categories = categories;
 
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var filter = await _context.Filters.FindAsync(id);
-            if (filter == null)
-            {
-                return NotFound();
-            }
-            return View(filter);
+            Filter filter = _context.Filters.Find(id);
+            return PartialView(filter);
         }
 
         // POST: Filters/Edit/5
@@ -124,21 +151,10 @@ namespace InetMarket.Controllers
         }
 
         // GET: Filters/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public PartialViewResult Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var filter = await _context.Filters
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (filter == null)
-            {
-                return NotFound();
-            }
-
-            return View(filter);
+            Filter filter = _context.Filters.Find(id);
+            return PartialView(filter);
         }
 
         // POST: Filters/Delete/5
@@ -146,6 +162,18 @@ namespace InetMarket.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            //удаление доп фильтров, привязаннх к фильтру
+            List<FilterAddititon> filterAddititons = _context.FilterAddititons.ToList();
+            foreach (var item in filterAddititons)
+            {
+                if (item.FilterId == id)
+                {
+                    var filterAddititon = await _context.FilterAddititons.FindAsync(item.Id);
+                    _context.FilterAddititons.Remove(filterAddititon);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
             var filter = await _context.Filters.FindAsync(id);
             _context.Filters.Remove(filter);
             await _context.SaveChangesAsync();

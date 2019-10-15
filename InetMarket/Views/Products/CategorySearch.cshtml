@@ -1,0 +1,81 @@
+﻿@model InetMarket.Models.ProductListView
+<div id="sresults">
+        <table class="table">
+            <thead>
+                @foreach (var item in Model.Products)
+                {
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(modellItem => item.Title)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(modellItem => item.Description)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(modellItem => item.MainImage)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(modellItem => item.IsDiscount)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(modellItem => item.IsMane)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(modellItem => item.CategoryId)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(modellItem => item.Price)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(modellItem => item.BrandId)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(modellItem => item.ProviderId)
+                        </th>
+                        <th></th>
+                    </tr>
+                    break;
+                }
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Products)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            <img src="@Url.Content(item.MainImage)" alt="Image" />
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IsDiscount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IsMane)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Category.Title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Price)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Brand.Title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Provider.Title)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Фильтры", "EditFilters", new { id = item.Id }) |
+                            @Html.ActionLink("Изменить", "Edit", new { id = item.Id }, new { @class = "compItem" }) |
+                            @Html.ActionLink("Подробно", "Details", new { id = item.Id }, new { @class = "compItem" }) |
+                            @Html.ActionLink("Удалить", "Delete", new { id = item.Id }, new { @class = "compItem" })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+</div>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,5 +18,10 @@ namespace InetMarket.Models
 
         [Display(Name = "Фильтр")]
         public int FilterId { get; set; }
+
+        public Filter Filter { get; set; }
+
+        [NotMapped]
+        public bool IsChecked { get; set; }
     }
 }

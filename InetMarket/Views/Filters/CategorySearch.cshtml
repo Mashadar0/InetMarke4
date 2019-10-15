@@ -1,0 +1,38 @@
+﻿@model InetMarket.Models.FilterListView
+
+<table class="table">
+    <thead>
+        @foreach (var item in Model.Filters)
+        {
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(modellItem => item.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(modellItem => item.CategoryId)
+                </th>
+                <th></th>
+            </tr>
+            break;
+        }
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Filters)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category.Title)
+                </td>
+                <td>
+                    @Html.ActionLink("Изменить", "Edit", new { id = item.Id }, new { @class = "compItem" }) |
+                    @Html.ActionLink("Подробно", "Details", new { id = item.Id }, new { @class = "compItem" }) |
+                    @Html.ActionLink("Удалить", "Delete", new { id = item.Id }, new { @class = "compItem" }) |
+                    @Html.ActionLink("Доп фильтры", "FilterSearch", new { filterId = item.Id }@*, new { @class = "compItem" }*@)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

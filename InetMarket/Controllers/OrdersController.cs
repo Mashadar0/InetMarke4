@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using InetMarket.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InetMarket.Controllers
 {
+    [Authorize]
     public class OrdersController : Controller
     {
         private readonly MarketContext _context;
@@ -25,30 +27,19 @@ namespace InetMarket.Controllers
         }
 
         // GET: Orders/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public PartialViewResult Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var order = await _context.Orders
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            return View(order);
+            Order order = _context.Orders.Find(id);
+            return PartialView(order);
         }
 
         // GET: Orders/Create
-        public IActionResult Create()
+        public PartialViewResult Create()
         {
             SelectList clients = new SelectList(_context.Clients, "Id", "Title");
             ViewBag.Clients = clients;
 
-            return View();
+            return PartialView();
         }
 
         // POST: Orders/Create
@@ -68,22 +59,13 @@ namespace InetMarket.Controllers
         }
 
         // GET: Orders/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public PartialViewResult Edit(int? id)
         {
             SelectList clients = new SelectList(_context.Clients, "Id", "Title");
             ViewBag.Clients = clients;
 
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-            return View(order);
+            Order order = _context.Orders.Find(id);
+            return PartialView(order);
         }
 
         // POST: Orders/Edit/5
@@ -122,21 +104,10 @@ namespace InetMarket.Controllers
         }
 
         // GET: Orders/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public PartialViewResult Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var order = await _context.Orders
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            return View(order);
+            Order order = _context.Orders.Find(id);
+            return PartialView(order);
         }
 
         // POST: Orders/Delete/5

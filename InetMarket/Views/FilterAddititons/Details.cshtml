@@ -1,0 +1,32 @@
+﻿@model InetMarket.Models.FilterAddititon
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button class="close" data-dismiss="modal" area-hidden="true">Закрыть</button>
+        <h4>Подробно</h4>
+    </div>
+    <div class="modal-body">
+            <h4>Дополнительный фильтр</h4>
+            <hr />
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Title)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Title)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.FilterId)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Filter.Title)
+                </dd>
+            </dl>
+    </div>
+    <div>
+        @Html.ActionLink("Изменить", "Edit", new { id = Model.Id }, new { @class = "compItem" }) |
+        @Html.ActionLink("Удалить", "Delete", new { id = Model.Id }, new { @class = "compItem" })
+    </div>
+</div>
+
+<script type="text/javascript" src="~/js/test.js" defer></script>

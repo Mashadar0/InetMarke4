@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace InetMarket.Models
 {
-    public class ProductListView
+    //для сортировки фильтров по категориям
+    public class FilterListView
     {
-        public IEnumerable<Product> Products { get; set; }
+        public ICollection<Filter> Filters { get; set; }
         public SelectList Categories { get; set; }
     }
 }

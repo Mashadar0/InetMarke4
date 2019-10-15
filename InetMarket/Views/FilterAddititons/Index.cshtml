@@ -1,0 +1,31 @@
+﻿@model InetMarket.Models.FilterAddititonListView
+
+@{
+    ViewData["Title"] = "Список доп. фильтров";
+}
+
+<div id="modDialog" class="modal fade">
+    <div id="dialogContent" class="modal-dialog"></div>
+</div>
+
+<h2>Список</h2>
+
+<p>
+    @Html.ActionLink("Добавить", "Create", new { }, new { @class = "compItem" })
+</p>
+
+<form action="/FilterAddititons/FilterSearch" data-ajax="true" data-ajax-mode="replace"
+      data-ajax-update="#results" id="form0" method="get" data-ajax-method="get" data-ajax-loading="#loading">
+    <div class="form-inline">
+        <label class="control-label">Фильтры: </label>
+        @Html.DropDownList("filterId", Model.Filters as SelectList,
+                    htmlAttributes: new { @class = "form-control" })
+        <input type="submit" value="Фильтр" class="btn btn-default" />
+    </div>
+</form>
+<div id="loading" style="display:none; font-weight:bold;">
+    <p>Идет загрузка...</p>
+</div>
+<div id="results">@await Html.PartialAsync("FilterSearch")</div>
+
+<script type="text/javascript" src="~/js/test.js" defer></script>

@@ -29,13 +29,15 @@ namespace InetMarket
         {
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<MarketContext>(options => options.UseSqlServer(connection));
-            // установка конфигурации подключения
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options => //CookieAuthenticationOptions
+                .AddCookie(options =>
                 {
-                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
+                    options.LoginPath = new PathString("/Account/Login");
+                    options.AccessDeniedPath = new PathString("/Account/Login");
                 });
 
+            // добавление сервисов фреймворка MVC
             services.AddMvc();
         }
 
@@ -55,13 +57,17 @@ namespace InetMarket
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+
+            //для использования аутентификации в приложении
             app.UseAuthentication();
 
+            // добавление компонентов mvc и определение маршрута
             app.UseMvc(routes =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                app.UseMvcWithDefaultRoute(); //стандартный маршрут
+                //routes.MapRoute(
+                //    name: "default",
+                //    template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

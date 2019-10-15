@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using InetMarket.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InetMarket.Controllers
 {
+    [Authorize (Roles = "admin")]
     public class BrandsController : Controller
     {
         private readonly MarketContext _context;
@@ -25,27 +27,16 @@ namespace InetMarket.Controllers
         }
 
         // GET: Brands/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public PartialViewResult Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var brand = await _context.Brands
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (brand == null)
-            {
-                return NotFound();
-            }
-
-            return View(brand);
+            Brand brand = _context.Brands.Find(id);
+            return PartialView(brand);
         }
 
         // GET: Brands/Create
-        public IActionResult Create()
+        public PartialViewResult Create()
         {
-            return View();
+            return PartialView();
         }
 
         // POST: Brands/Create
@@ -65,19 +56,10 @@ namespace InetMarket.Controllers
         }
 
         // GET: Brands/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public PartialViewResult Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var brand = await _context.Brands.FindAsync(id);
-            if (brand == null)
-            {
-                return NotFound();
-            }
-            return View(brand);
+            Brand brand = _context.Brands.Find(id);
+            return PartialView(brand);
         }
 
         // POST: Brands/Edit/5
@@ -116,21 +98,10 @@ namespace InetMarket.Controllers
         }
 
         // GET: Brands/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public PartialViewResult Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var brand = await _context.Brands
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (brand == null)
-            {
-                return NotFound();
-            }
-
-            return View(brand);
+            Brand brand = _context.Brands.Find(id);
+            return PartialView(brand);
         }
 
         // POST: Brands/Delete/5
